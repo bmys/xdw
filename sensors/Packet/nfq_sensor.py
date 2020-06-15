@@ -1,9 +1,8 @@
 from netfilterqueue import NetfilterQueue, Packet
-from Analyzers.Packet.PacketAnalyzer import PacketAnalyzer
+from analyzers.Packet import PacketAnalyzer
 
 
-class NQPacketSensor:
-
+class NFQSensor:
     def __init__(self, packet_analyzer: PacketAnalyzer):
         self.packet_analyzer = packet_analyzer
         self.nfqueue = NetfilterQueue()
@@ -19,4 +18,3 @@ class NQPacketSensor:
             self.nfqueue.run()
         except KeyboardInterrupt:
             pass
-

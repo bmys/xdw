@@ -1,5 +1,5 @@
-from Analyzers.Packet.ScapyPacketAnalyzer import ScapyAnalyzer
-from Sensors.Packet.PacketSensor import NQPacketSensor
+from analyzers.Packet import ScapyAnalyzer
+from sensors.Packet import NFQSensor
 
-sensor = NQPacketSensor(packet_analyzer=ScapyAnalyzer())
+sensor = NFQSensor(packet_analyzer=ScapyAnalyzer())
 sensor.run()
