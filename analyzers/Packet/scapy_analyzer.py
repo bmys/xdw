@@ -1,9 +1,6 @@
 from scapy.layers.inet import IP, UDP, TCP, ICMP, TCP_SERVICES, Packet, Ether
 from analyzers.Packet.packet_analyzer import PacketAnalyzer
 from itertools import count
-import pprint
-
-pp = pprint.PrettyPrinter(indent=4)
 
 
 class ScapyAnalyzer(PacketAnalyzer):
@@ -19,5 +16,4 @@ class ScapyAnalyzer(PacketAnalyzer):
                 break
             data[layer.name] = layer.fields
 
-        pp.pprint(data)
-        print('\n'*5)
+        return data
