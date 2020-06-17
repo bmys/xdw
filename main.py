@@ -1,7 +1,9 @@
 from analyzers.Packet import ScapyAnalyzer
 from analyzers.Packet.scapy_analyzer import ScapyFlatAnalyzer
 from sensors.Packet import NFQSensor
-from utils import PacketPipe, flatten, print_and_pass
+from utils import PacketPipe, flatten, print_and_pass, get_local_ip
+
+print(get_local_ip())
 
 analyzer = ScapyFlatAnalyzer(
     (
@@ -15,6 +17,6 @@ analyzer = ScapyFlatAnalyzer(
     )
 )
 
-preprocessing = PacketPipe(analyzer, flatten, print_and_pass)
+preprocessing = PacketPipe(analyzer, print_and_pass)
 sensor = NFQSensor(packet_analyzer=preprocessing)
 sensor.run()

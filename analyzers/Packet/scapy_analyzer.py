@@ -69,3 +69,14 @@ class ScapyFlatAnalyzer(PacketAnalyzer):
     def analyze_packet(self, pkt: bytes):
         pkt = IP(pkt)
         return self.extractor.extract(pkt)
+
+
+class ScapyBasicAnalyzer(PacketAnalyzer):
+    TCP_REVERSE = dict((TCP_SERVICES[k], k) for k in TCP_SERVICES.keys())
+
+    def analyze_packet(self, pkt: bytes):
+        raise NotImplementedError
+        # data = dict()
+        # pkt = IP(pkt)
+        # ...
+        # return data
