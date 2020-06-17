@@ -1,6 +1,7 @@
 from scapy.layers.inet import IP, UDP, TCP, ICMP, TCP_SERVICES, Packet, Ether
 from analyzers.Packet.packet_analyzer import PacketAnalyzer
 from itertools import count
+from utils import get_local_ip
 
 
 class ScapyAnalyzer(PacketAnalyzer):
@@ -73,10 +74,21 @@ class ScapyFlatAnalyzer(PacketAnalyzer):
 
 class ScapyBasicAnalyzer(PacketAnalyzer):
     TCP_REVERSE = dict((TCP_SERVICES[k], k) for k in TCP_SERVICES.keys())
+    LOCAL_IPS = get_local_ip()
 
     def analyze_packet(self, pkt: bytes):
-        raise NotImplementedError
-        # data = dict()
-        # pkt = IP(pkt)
-        # ...
-        # return data
+        data = dict()
+        pkt = IP(pkt)
+        ip_layer = pkt.getlayer(0)
+
+        # Features assignment
+        data['direction'] = 'OUT' if ip_layer.src in self.LOCAL_IPS else 'IN'
+        data['IP_len'] = ip_layer.len
+        data['ttl'] = ip_layer.ttl
+
+        second_layer = pkt.getlayer(1)
+        data['service'] = self.TCP_REVERSE.get(second_layer.dport, 'unknown')
+        data['protocol'] = second_layer.name
+
+        return data
+

@@ -1,4 +1,4 @@
-from analyzers.Packet import PacketAnalyzer
+from analyzers.Packet.packet_analyzer import PacketAnalyzer
 
 
 class Pipe:
