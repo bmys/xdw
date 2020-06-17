@@ -80,14 +80,14 @@ class ScapyBasicAnalyzer(PacketAnalyzer):
         data = dict()
         pkt = IP(pkt)
         ip_layer = pkt.getlayer(0)
-
+        # pkt.show2()
         # Features assignment
         data['direction'] = 'OUT' if ip_layer.src in self.LOCAL_IPS else 'IN'
         data['IP_len'] = ip_layer.len
         data['ttl'] = ip_layer.ttl
 
         second_layer = pkt.getlayer(1)
-        data['service'] = self.TCP_REVERSE.get(second_layer.dport, 'unknown')
+        data['service'] = self.TCP_REVERSE.get(second_layer.sport, 'unknown')
         data['protocol'] = second_layer.name
 
         return data
