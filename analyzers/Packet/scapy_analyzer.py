@@ -89,6 +89,7 @@ class ScapyBasicAnalyzer(PacketAnalyzer):
         second_layer = pkt.getlayer(1)
         data['service'] = self.TCP_REVERSE.get(second_layer.sport, 'unknown')
         data['protocol'] = second_layer.name
+        data['len2'] = len(second_layer)
 
         return data
 
