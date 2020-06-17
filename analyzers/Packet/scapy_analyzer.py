@@ -1,4 +1,6 @@
 from scapy.layers.inet import IP, UDP, TCP, ICMP, TCP_SERVICES, Packet, Ether
+
+from analyzers.Frequency.frequency_analyzer import FrequencyAnalyzer
 from analyzers.Packet.packet_analyzer import PacketAnalyzer
 from itertools import count
 from utils import get_local_ip
@@ -76,6 +78,8 @@ class ScapyBasicAnalyzer(PacketAnalyzer):
     TCP_REVERSE = dict((TCP_SERVICES[k], k) for k in TCP_SERVICES.keys())
     LOCAL_IPS = get_local_ip()
 
+    freq = FrequencyAnalyzer(10, 100)
+
     def analyze_packet(self, pkt: bytes):
         data = dict()
         pkt = IP(pkt)
@@ -90,6 +94,7 @@ class ScapyBasicAnalyzer(PacketAnalyzer):
         data['service'] = self.TCP_REVERSE.get(second_layer.sport, 'unknown')
         data['protocol'] = second_layer.name
         data['len2'] = len(second_layer)
+        data['frequency'] = self.freq(ip_layer.src)
 
         return data
 
