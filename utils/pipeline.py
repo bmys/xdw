@@ -15,7 +15,7 @@ class Pipe:
 class PacketPipe(PacketAnalyzer):
 
     def __init__(self, packet_analyzer, *args):
-        self.packet_analyzer = packet_analyzer()
+        self.packet_analyzer = packet_analyzer
         self.pipe = Pipe(*args)
         self.packet = None
 

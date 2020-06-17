@@ -17,3 +17,55 @@ class ScapyAnalyzer(PacketAnalyzer):
             data[layer.name] = layer.fields
 
         return data
+
+
+class ScapyFlatAnalyzer(PacketAnalyzer):
+    TCP_REVERSE = dict((TCP_SERVICES[k], k) for k in TCP_SERVICES.keys())
+
+    class Extractor:
+        def __init__(self, values):
+            self.to_extract = list()
+
+            for layer in values:
+                l = (set(), set(), set())
+                for value in layer:
+                    if isinstance(value, tuple):
+                        if isinstance(value[0], tuple):
+                            l[2].add(value)
+                        else:
+                            l[1].add(value)
+                    else:
+                        l[0].add(value)
+                self.to_extract.append(l)
+
+        def extract(self, pkt: Packet):
+            data = dict()
+            for num, to_extract in enumerate(self.to_extract):
+                layer = pkt.getlayer(num)
+
+                for var_name in to_extract[0]:
+                    data[var_name] = layer.__getattr__(var_name)
+
+                for var_name in to_extract[1]:
+                    data[var_name[1]] = layer.__getattr__(var_name[0])
+
+                for var_name in to_extract[2]:
+                    names, key = var_name
+
+                    for name in names:
+                        try:
+                            data[key] = layer.__getattr__(name)
+
+                            break
+                        except AttributeError:
+                            continue
+
+            return data
+
+    def __init__(self, values):
+        # ('A', 'B', ('C', 'I_C')), ('D', 'C'), ('D', 'C')
+        self.extractor = self.Extractor(values)
+
+    def analyze_packet(self, pkt: bytes):
+        pkt = IP(pkt)
+        return self.extractor.extract(pkt)
