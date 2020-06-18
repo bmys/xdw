@@ -1,5 +1,4 @@
-from scapy.layers.inet import IP, UDP, TCP, ICMP, TCP_SERVICES, Packet, Ether
-
+from scapy.layers.inet import IP, UDP, TCP, ICMP, TCP_SERVICES, Packet
 from analyzers.Frequency.frequency_analyzer import FrequencyAnalyzer
 from analyzers.Packet.packet_analyzer import PacketAnalyzer
 from itertools import count
@@ -95,6 +94,7 @@ class ScapyBasicAnalyzer(PacketAnalyzer):
         data['protocol'] = second_layer.name
         data['len2'] = len(second_layer)
         data['frequency'] = self.freq(ip_layer.src)
+        data['port_open'] = second_layer.sport
 
         return data
 

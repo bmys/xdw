@@ -29,7 +29,7 @@ class FrequencyAnalyzer:
         clean_older_than = dt.datetime.now() - dt.timedelta(seconds=self.seconds)
         keys_to_drop = list()
         for key in self.state:
-            self.state[key] = list(filter(lambda x: x < clean_older_than, self.state[key]))
+            self.state[key] = list(filter(lambda x: x > clean_older_than, self.state[key]))
 
             if len(self.state[key]) == 0:
                 keys_to_drop.append(key)
