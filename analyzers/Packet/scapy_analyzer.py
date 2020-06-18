@@ -77,7 +77,8 @@ class ScapyBasicAnalyzer(PacketAnalyzer):
     TCP_REVERSE = dict((TCP_SERVICES[k], k) for k in TCP_SERVICES.keys())
     LOCAL_IPS = get_local_ip()
 
-    freq = FrequencyAnalyzer(10, 100)
+    freq = FrequencyAnalyzer(60, 1000)
+    dos_dump = list()
 
     def analyze_packet(self, pkt: bytes):
         data = dict()
@@ -96,6 +97,11 @@ class ScapyBasicAnalyzer(PacketAnalyzer):
         data['len2'] = len(second_layer)
         data['frequency'] = self.freq(ip_layer.src)
         data['port_open'] = second_layer.sport
+
+        # self.dos_dump.append(data)
+
+        # if ip_layer.src == '8.8.8.8' and data['frequency'] > 1650:
+        #     self.dos_dump.append(data)
 
         return data
 

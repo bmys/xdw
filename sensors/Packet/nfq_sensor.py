@@ -1,5 +1,6 @@
 from netfilterqueue import NetfilterQueue, Packet
 from analyzers.Packet import PacketAnalyzer
+import json
 
 
 class NFQSensor:
@@ -17,4 +18,6 @@ class NFQSensor:
         try:
             self.nfqueue.run()
         except KeyboardInterrupt:
+            # with open('./normal.json', 'w') as fout:
+            #     json.dump(self.packet_analyzer.dos_dump, fout)
             pass
