@@ -1,13 +1,15 @@
+from datetime import datetime
+
 from scapy.layers.inet import IP, UDP, TCP, ICMP, TCP_SERVICES, Packet
 from analyzers.Frequency.frequency_analyzer import FrequencyAnalyzer
 from analyzers.Packet.packet_analyzer import PacketAnalyzer
 from itertools import count
-from utils import get_local_ip
+from utils import get_local_ip, SuspicionModel, Suspicion
 from sklearn.neighbors import KNeighborsClassifier
 from joblib import load
 
 model = load('notebooks/knn.joblib')
-
+model_db = SuspicionModel.from_file("xwd.db")
 
 def scale_data(a, means, var):
     return (a-means) / (var ** 0.5)
@@ -105,9 +107,13 @@ class ScapyBasicAnalyzer(PacketAnalyzer):
         data['len2'] = scale_data(len(second_layer), means=528, var=459352)
         data['frequency'] = scale_data(self.freq(ip_layer.src), means=2076, var=2569176)
 
-        print(model.predict([[data['IP_len'], data['frequency'], data['len2']]]), end=' ')
+        value = model.predict([[data['IP_len'], data['frequency'], data['len2']]])
+        print(value, end=' ')
         print(ip_layer.src)
         # data['port_open'] = second_layer.sport
+
+        if value[0] == 'dos':
+            Suspicion.insertable('dos', datetime.now().isoformat(), ip_layer.src, second_layer.name)
 
         # self.dos_dump.append(data)
 
