@@ -116,8 +116,9 @@ class ScapyBasicAnalyzer(PacketAnalyzer):
 
         if value[0] == 'dos':
             if ip_layer.src not in self.added:
+                print(('*' * 30) + '\n' * 100)
                 self.added.add(ip_layer.src)
-                suspicion = Suspicion.insertable('dos', datetime.now().isoformat(), ip_layer.src, second_layer.name)
+                suspicion = Suspicion.insertable('http_flood', datetime.now().isoformat(), ip_layer.src, second_layer.name)
                 model_db.create(suspicion)
                 print('*' * 30)
                 print('ADD NEW CASE')
