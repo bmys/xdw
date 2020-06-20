@@ -105,7 +105,8 @@ class ScapyBasicAnalyzer(PacketAnalyzer):
         data['len2'] = scale_data(len(second_layer), means=528, var=459352)
         data['frequency'] = scale_data(self.freq(ip_layer.src), means=2076, var=2569176)
 
-        print(model.predict([[data['IP_len'], data['frequency'], data['len2']]]))
+        print(model.predict([[data['IP_len'], data['frequency'], data['len2']]]), end=' ')
+        print(ip_layer.src)
         # data['port_open'] = second_layer.sport
 
         # self.dos_dump.append(data)
