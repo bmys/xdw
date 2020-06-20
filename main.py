@@ -23,5 +23,5 @@ analyzer = ScapyBasicAnalyzer()
 # OpenPortAnalyzer(60, 20)
 
 preprocessing = PacketPipe(analyzer, print_and_pass)
-sensor = NFQSensor(packet_analyzer=analyzer)
+sensor = NFQSensor(packet_analyzer=preprocessing)
 sensor.run()

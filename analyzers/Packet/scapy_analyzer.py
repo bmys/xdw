@@ -3,6 +3,14 @@ from analyzers.Frequency.frequency_analyzer import FrequencyAnalyzer
 from analyzers.Packet.packet_analyzer import PacketAnalyzer
 from itertools import count
 from utils import get_local_ip
+from sklearn.neighbors import KNeighborsClassifier
+from joblib import load
+
+model = load('notebooks/knn.joblib')
+
+
+def scale_data(a, means, var):
+    return (a-means) / (var ** 0.5)
 
 
 class ScapyAnalyzer(PacketAnalyzer):
@@ -86,17 +94,19 @@ class ScapyBasicAnalyzer(PacketAnalyzer):
         ip_layer = pkt.getlayer(0)
         # pkt.show2()
         # Features assignment
-        data['direction'] = 'OUT' if ip_layer.src in self.LOCAL_IPS else 'IN'
-        data['IP_len'] = ip_layer.len
-        data['ttl'] = ip_layer.ttl
+        # data['direction'] = 'OUT' if ip_layer.src in self.LOCAL_IPS else 'IN'
+        data['IP_len'] = scale_data(ip_layer.len, means=548, var=459352)
+        # data['ttl'] = ip_layer.ttl
 
         second_layer = pkt.getlayer(1)
         # second_layer.show2()
-        data['service'] = self.TCP_REVERSE.get(second_layer.sport, 'unknown')
-        data['protocol'] = second_layer.name
-        data['len2'] = len(second_layer)
-        data['frequency'] = self.freq(ip_layer.src)
-        data['port_open'] = second_layer.sport
+        # data['service'] = self.TCP_REVERSE.get(second_layer.sport, 'unknown')
+        # data['protocol'] = second_layer.name
+        data['len2'] = scale_data(len(second_layer), means=528, var=459352)
+        data['frequency'] = scale_data(self.freq(ip_layer.src), means=2076, var=2569176)
+
+        print(model.predict([[data['IP_len'], data['frequency'], data['len2']]]))
+        # data['port_open'] = second_layer.sport
 
         # self.dos_dump.append(data)
 
