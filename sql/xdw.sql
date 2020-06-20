@@ -10,6 +10,7 @@ CREATE TABLE suspicion (
 
 CREATE TABLE filter_rule (
     rule_id integer NOT NULL,
+    rule_name text NOT NULL,
     suspicion_id integer NOT NULL,
     enable_time text NOT NULL,
     is_active boolean NOT NULL DEFAULT TRUE,
