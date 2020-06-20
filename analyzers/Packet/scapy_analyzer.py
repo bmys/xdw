@@ -9,7 +9,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from joblib import load
 
 model = load('notebooks/knn.joblib')
-model_db = SuspicionModel.from_file("xwd.db")
+model_db = SuspicionModel.from_file("xdw.db")
 
 def scale_data(a, means, var):
     return (a-means) / (var ** 0.5)
