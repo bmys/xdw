@@ -90,6 +90,8 @@ class ScapyBasicAnalyzer(PacketAnalyzer):
     freq = FrequencyAnalyzer(60, 1000)
     dos_dump = list()
 
+    added = set()
+
     def analyze_packet(self, pkt: bytes):
         data = dict()
         pkt = IP(pkt)
@@ -113,7 +115,14 @@ class ScapyBasicAnalyzer(PacketAnalyzer):
         # data['port_open'] = second_layer.sport
 
         if value[0] == 'dos':
-            Suspicion.insertable('dos', datetime.now().isoformat(), ip_layer.src, second_layer.name)
+            if ip_layer.src not in self.added:
+                self.added.add(ip_layer.src)
+                suspicion = Suspicion.insertable('dos', datetime.now().isoformat(), ip_layer.src, second_layer.name)
+                model_db.create(suspicion)
+                print('*' * 30)
+                print('ADD NEW CASE')
+                print('*' * 30)
+
 
         # self.dos_dump.append(data)
 
